@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -O3
 CFLAGS_DEBUG = -Wall -g -O3
-LDFLAGS = -lcv -lml -lhighgui -lncurses
+LDFLAGS = -lcv -lhighgui -lncurses
 INCLUDES =
 OBJ_FLAGS = -fPIC
 

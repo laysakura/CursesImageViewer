@@ -1,0 +1,66 @@
+* はじめに
+  CursesImageViewer は現在ベータリリースです．
+  このドキュメントを読んだ上で，
+
+  - 動作要件を満たしているのに動かない
+  - コンパイルが通らない
+
+  などございましたらご連絡ください．
+  (対応が遅れる場合もございます)
+
+  Twitter: [[http://twitter.jp/laysakura][@laysakura]]
+
+* CursesImageViewer (CIV) の概要
+  CursesImageViewer は，curses を使って画像を閲覧するためのソフトです．
+  X などのウィンドウシステムに依存しないため，CUI のサーバ上などでも画像を閲覧することができます．
+
+* 動作要件
+  バージョンなどもざっくりです．
+  「このバージョンだと動かない」といったご報告もお待ちしております．
+
+** OS
+   Linux, BSD, Unix
+
+   を(一応)想定．
+   現在，Ubuntu Linux, Debian Linux で動作確認をとってます．
+
+** curses ライブラリ
+  - libncurses
+
+** OpenCV ライブラリ
+  - libcv
+  - libhighgui
+
+  参考までに，Ubuntu での必要ライブラリのインストール法も記述します．
+  #+BEGIN_SRC sh
+sudo apt-get install libncurses-dev libcv-dev libhighgui-dev
+  #+END_SRC
+
+* インストール
+  このマニュアルのあるディレクトリで make をして，できた実行ファイルを適当なところに置いて実行してください．
+  #+BEGIN_SRC sh
+make
+  #+END_SRC
+
+* 使い方
+** 起動
+   #+BEGIN_SRC sh
+./curses_image_viewer path/to/image_file
+   #+END_SRC
+
+** 操作
+   - h,j,k,l キー :: それぞれ画像の表示範囲を左，上，下，右に移動
+   - その他のキー :: 終了
+
+* サポート画像フォーマット
+  OpenCV の cvLoadImage 関数のサポートする画像に準じます．
+  参考: http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage
+
+  - Windows bitmaps - BMP, DIB;
+  - JPEG files - JPEG, JPG, JPE;
+  - Portable Network Graphics - PNG;
+  - Portable image format - PBM, PGM, PPM;
+  - Sun rasters - SR, RAS;
+  - TIFF files - TIFF, TIF;
+  - OpenEXR HDR images - EXR;
+  - JPEG 2000 images - jp2.
