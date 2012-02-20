@@ -14,13 +14,9 @@ DEPENDS = $(subst .c,.d,$(SRCS))
 
 TARGETS += libciv-core.so
 
-DEBUG_TARGETS =
-
-# TEST_TARGETS += opencv_test
-# TEST_TARGETS += color_subtraction_test
 
 .PHONY: all
-all: $(TARGETS) $(DEBUG_TARGETS) $(TEST_TARGETS)
+all: $(TARGETS)
 
 .PHONY: clean
 clean:
@@ -29,13 +25,6 @@ clean:
 # Targets
 libciv-core.so: civ_python_API.o civ_color_subtraction.o
 	$(CC) $(CFLAGS) $(SHARED_LIB_FLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
-
-# Test Targets
-opencv_test: opencv_test.c
-	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
-
-color_subtraction_test: color_subtraction_test.c libciv-core.so
-	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS) -L. -lciv-core
 
 
 .SUFFIXES: .c .o
