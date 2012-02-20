@@ -6,9 +6,7 @@ typedef struct civ_RGB {
   unsigned char r;
   unsigned char g;
   unsigned char b;
-  int color_number;
 } civ_RGB;
-
 
 static inline float
 RGB_distance_between(const CvScalar *v1, const CvScalar *v2)
