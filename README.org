@@ -1,3 +1,10 @@
+* スクリーンショット
+  #+CAPTION: 猫写真
+  [[https://github.com/laysakura/CursesImageViewer/raw/master/screenshot/cat_screenshot.png]]
+
+  #+CAPTION: うぐいすイラスト
+  [[https://github.com/laysakura/CursesImageViewer/raw/master/screenshot/ume_uguisu_soft_screenshot.png]]
+
 * はじめに
   CursesImageViewer は現在ベータリリースです．
   このドキュメントを読んだ上で，
@@ -49,12 +56,17 @@ make
    #+END_SRC
 
 ** 操作
-   - h,j,k,l キー :: それぞれ画像の表示範囲を左，上，下，右に移動
-   - その他のキー :: 終了
+   - h,j,k,l キー
+     それぞれ画像の表示範囲を左，上，下，右に移動
+   - その他のキー
+     終了
+
+** ヒント
+   文字サイズを変更できる端末を使用している場合は，文字サイズを小さくすることで画像が見えやすくなります．
 
 * サポート画像フォーマット
   OpenCV の cvLoadImage 関数のサポートする画像に準じます．
-  参考: http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage
+  参考: [[http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage][http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage]] 
 
   - Windows bitmaps - BMP, DIB;
   - JPEG files - JPEG, JPG, JPE;
