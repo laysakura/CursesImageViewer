@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -O3
 CFLAGS_DEBUG = -Wall -g -O3
-LDFLAGS = -lcv -lml -lhighgui
+LDFLAGS = -lcv -lml -lhighgui -lncurses
 INCLUDES =
 SHARED_LIB_FLAGS = -shared -fPIC
 OBJ_FLAGS = -fPIC
@@ -23,7 +23,7 @@ clean:
 	rm -f $(TARGETS) $(DEBUG_TARGETS) $(TEST_TARGETS) *.o *.d *.s *.gch *_flymake* core *~
 
 # Targets
-libciv-core.so: civ_python_API.o civ_color_subtraction.o
+libciv-core.so: civ_python_API.o civ_color_subtraction.o civ_curses.o
 	$(CC) $(CFLAGS) $(SHARED_LIB_FLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 
