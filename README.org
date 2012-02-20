@@ -7,6 +7,7 @@
 
 * はじめに
   CursesImageViewer は現在ベータリリースです．
+
   このドキュメントを読んだ上で，
 
   - 動作要件を満たしているのに動かない
@@ -19,16 +20,19 @@
 
 * CursesImageViewer (CIV) の概要
   CursesImageViewer は，curses を使って画像を閲覧するためのソフトです．
+
   X などのウィンドウシステムに依存しないため，CUI のサーバ上などでも画像を閲覧することができます．
 
 * 動作要件
   バージョンなどもざっくりです．
+
   「このバージョンだと動かない」といったご報告もお待ちしております．
 
 ** OS
    Linux, BSD, Unix
 
    を(一応)想定．
+
    現在，Ubuntu Linux, Debian Linux で動作確認をとってます．
 
 ** curses ライブラリ
@@ -47,6 +51,7 @@ sudo apt-get install libncurses-dev libcv-dev libhighgui-dev
   このマニュアルのあるディレクトリで make をして，できた実行ファイルを適当なところに置いて実行してください．
   #+BEGIN_SRC sh
 make
+ls curses_image_viewer
   #+END_SRC
 
 * 使い方
@@ -57,8 +62,11 @@ make
 
 ** 操作
    - h,j,k,l キー
+
      それぞれ画像の表示範囲を左，上，下，右に移動
+
    - その他のキー
+
      終了
 
 ** ヒント
@@ -66,6 +74,7 @@ make
 
 * サポート画像フォーマット
   OpenCV の cvLoadImage 関数のサポートする画像に準じます．
+
   参考: [[http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage][http://opencv.jp/opencv-2svn_org/c/highgui_reading_and_writing_images_and_video.html?highlight=cvloadimage#cvLoadImage]] 
 
   - Windows bitmaps - BMP, DIB;
