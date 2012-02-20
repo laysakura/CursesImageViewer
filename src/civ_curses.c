@@ -81,13 +81,13 @@ void
 curses_draw_img_with_origin(const IplImage *img,
                             const civ_RGB *palette,
                             const int palette_len,
+                            const int win_height,
+                            const int win_width,
                             const int origin_i,
                             const int origin_j)
 {
   int img_height = img->height;
   int img_width = img->width;
-  int win_height, win_width;
-  getmaxyx(stdscr, win_height, win_width);
 
   /* Draw only within terminal size */
   int i, j;
@@ -121,10 +121,14 @@ fix_origin_point(const int win_height,
                  int *origin_j)
 {
   if (*origin_i < 0) *origin_i = 0;
-  else if (*origin_i >= img_height - win_height) *origin_i = img_height - win_height;
+  else if (*origin_i > img_height - win_height) *origin_i = img_height - win_height;
 
   if (*origin_j < 0) *origin_j = 0;
-  else if (*origin_j >= img_width - win_width) *origin_j = img_width - win_width;
+  else if (*origin_j > img_width - win_width) *origin_j = img_width - win_width;
+
+  /* Image is scaller than window */
+  if (img_height < win_height) *origin_i = 0;
+  if (img_width < win_width) *origin_j = 0;
 }
 
 
@@ -142,7 +146,6 @@ curses_draw_img(IplImage *img,
 
   int img_height = img->height;
   int img_width = img->width;
-
   int origin_i = 0;
   int origin_j = 0;
 
@@ -153,7 +156,10 @@ curses_draw_img(IplImage *img,
 
     fix_origin_point(win_height, win_width, img_height, img_width, &origin_i, &origin_j);
 
-    curses_draw_img_with_origin(img, palette, palette_len, origin_i, origin_j);
+    curses_draw_img_with_origin(img,
+                                palette, palette_len,
+                                win_height, win_width,
+                                origin_i, origin_j);
     switch (getch()) {
     /* Move */
     case 'h':
