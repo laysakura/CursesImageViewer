@@ -8,6 +8,43 @@ typedef struct civ_RGB {
   unsigned char b;
 } civ_RGB;
 
+/* civ_RGB[] is called palette.
+
+   RGB -> curses_color_number:
+     Linear-search palette
+
+   curses_color_number -> RGB:
+     palette[color_number].(r|g|b)
+*/
+
+static inline void
+CvScalar_to_RGB(const CvScalar *cvScalar, civ_RGB *RGB_out)
+{
+  RGB_out->r = cvScalar->val[2];
+  RGB_out->g = cvScalar->val[1];
+  RGB_out->b = cvScalar->val[0];
+}
+
+static inline int
+CvScalar_to_color_number(const CvScalar *cvScalar,
+                         const civ_RGB *palette,
+                         const int palette_len)
+{
+  civ_RGB rgb;
+  CvScalar_to_RGB(cvScalar, &rgb);
+
+  int color_number;
+  for (color_number = 0; color_number < palette_len; ++color_number) {
+    if (palette[color_number].r == rgb.r &&
+        palette[color_number].g == rgb.g &&
+        palette[color_number].b == rgb.b) {
+      return color_number;
+    }
+  }
+  /* cvScalar is not in the palette */
+  abort();
+}
+
 static inline float
 RGB_distance_between(const CvScalar *v1, const CvScalar *v2)
 {

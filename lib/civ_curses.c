@@ -1,12 +1,12 @@
 #include <ncurses.h>
 #include "civ_curses.h"
 #include "civ_color.h"
+#include "civ_color_subtraction.h"
 
 
 /* NOTE that each color_pair == color_number + 1
    since color_pair is 1-origin and color_number 0-origin. */
 #define color_number_to_color_pair(color_number) (color_number + 1)
-
 
 void
 curses_setup()
@@ -45,33 +45,76 @@ curses_draw_pixel(int i, int j, const int color_number)
   mvaddch(i, j, ' ');
 }
 
-#include <unistd.h>
-
 void
-curses_draw_img(const IplImage *img,
-                const civ_RGB *palette,
-                const int palette_len)
+curses_draw_img_with_origin(const IplImage *img,
+                            const civ_RGB *palette,
+                            const int palette_len,
+                            const int origin_i,
+                            const int origin_j)
 {
-  curses_setup();
+  int img_height = img->height;
+  int img_width = img->width;
+  int win_height, win_width;
+  getmaxyx(stdscr, win_height, win_width);
 
+  /* Draw only within terminal size */
   int i, j;
-  for (i = 0; i < img->height; ++i) {
-    for (j = 0; j < img->width; ++j) {
-      CvScalar pixel_color = cvGet2D(img, i, j);
-
-      /* Find the closest color to pixel_color from palette */
-      int new_color_number;
-      nearest_color_number_from_palette(&pixel_color,
-                                        palette,
-                                        palette_len,
-                                        &new_color_number);
-
-      /* Draw pixel */
-      curses_draw_pixel(i, j, new_color_number);
+  for (i = 0; i < win_height ; ++i) {
+    for (j = 0; j < win_width; ++j) {
+      /* Point is within image */
+      if (0 <= origin_i + i && origin_i + i < img_height &&
+          0 <= origin_j + j && origin_j + j < img_width) {
+        CvScalar pixel_color = cvGet2D(img, origin_i + i, origin_j + j);
+        int color_number = CvScalar_to_color_number(&pixel_color,
+                                                    palette,
+                                                    palette_len);
+        curses_draw_pixel(i, j, color_number);
+      }
+      /* Point is out of image */
+      else {
+        curses_draw_pixel(i, j, COLOR_BLACK);
+      }
     }
   }
   refresh();
-  int key = getch();
+}
+
+
+void
+curses_draw_img(IplImage *img,
+                const civ_RGB *palette,
+                const int palette_len)
+{
+  /* Subtract color */
+  color_subtraction_by_RGB_distance(img, palette, palette_len);
+
+  /* Setup curses */
+  curses_setup();
+
+  int origin_i = 0;
+  int origin_j = 0;
+
+  /* Wait for keyboard input */
+  while (1) {
+    curses_draw_img_with_origin(img, palette, palette_len, origin_i, origin_j);
+    switch (getch()) {
+    case 'h':
+      origin_j -= 10;
+      break;
+    case 'j':
+      origin_i += 10;
+      break;
+    case 'k':
+      origin_i -= 10;
+      break;
+    case 'l':
+      origin_j += 10;
+      break;
+    default:
+      goto outof_keyloop;
+    }
+  }
+ outof_keyloop:
 
   curses_teardown();
 }

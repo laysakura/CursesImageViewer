@@ -6,14 +6,14 @@
 
 
 void
-color_subtraction_by_RGB_distance(IplImage *img_inout,
+color_subtraction_by_RGB_distance(IplImage *img,
                                   const civ_RGB *palette,
                                   const int palette_len)
 {
   int i, j;
-  for (i = 0; i < img_inout->height; ++i) {
-    for (j = 0; j < img_inout->width; ++j) {
-      CvScalar pixel_color = cvGet2D(img_inout, i, j);
+  for (i = 0; i < img->height; ++i) {
+    for (j = 0; j < img->width; ++j) {
+      CvScalar pixel_color = cvGet2D(img, i, j);
 
       /* Find the closest color to pixel_color from palette */
       CvScalar new_pixel_color;
@@ -23,7 +23,7 @@ color_subtraction_by_RGB_distance(IplImage *img_inout,
                                &new_pixel_color);
 
       /* Replace pixel with the closest color from palette */
-      cvSet2D(img_inout, i, j, new_pixel_color);
+      cvSet2D(img, i, j, new_pixel_color);
     }
   }
 }

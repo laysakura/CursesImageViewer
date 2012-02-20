@@ -49,9 +49,6 @@ civ_curses_draw_img(const char *img_path,
 
   curses_draw_img(img, palette, palette_len);
 
-  /* Draw on curses */
-  /* draw_on_curses(img); */
-
   /* Release object */
   cvReleaseImage(&img);
 }

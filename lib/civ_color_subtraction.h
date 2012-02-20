@@ -3,7 +3,7 @@
 
 
 void
-color_subtraction_by_RGB_distance(IplImage *img_inout,
+color_subtraction_by_RGB_distance(IplImage *img,
                                   const civ_RGB *palette,
                                   const int palette_len);
 

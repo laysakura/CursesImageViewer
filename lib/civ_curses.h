@@ -6,7 +6,7 @@
 #include "civ_color.h"
 
 void
-curses_draw_img(const IplImage *img,
+curses_draw_img(IplImage *img,
                 const civ_RGB *palette,
                 const int palette_len);
 

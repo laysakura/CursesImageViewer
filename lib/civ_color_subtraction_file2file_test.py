@@ -8,6 +8,7 @@ class civ_RGB(Structure):
         ("r", c_ubyte),
         ("g", c_ubyte),
         ("b", c_ubyte),
+        ("color_number", c_int),
         ]
 
 
@@ -25,9 +26,9 @@ def civ_RGB_of(curses_color_number):
     """
     color_tup = curses.color_content(curses_color_number)
     return civ_RGB(r=color_tup[0] * 255/1000,
-               g=color_tup[1] * 255/1000,
-               b=color_tup[2] * 255/1000,
-               color_number=curses_color_number)
+                   g=color_tup[1] * 255/1000,
+                   b=color_tup[2] * 255/1000,
+                   color_number=curses_color_number)
 
 def get_terminal_palette():
     try:
