@@ -1,14 +1,13 @@
-TARGETS += curses_image_viewer
+TARGETS += curses_image_viewer_topdir
 
 .PHONY: all
 all: $(TARGETS)
-	cd src ; $(MAKE) $@
 
 .PHONY: clean
 clean:
 	rm $(TARGETS)
 	cd src ; $(MAKE) $@
 
-curses_image_viewer:
-	cd src ; $(MAKE) $@ && \
-	mv $@ ../$@
+curses_image_viewer_topdir: curses_image_viewer
+	cd src ; $(MAKE) $^
+	mv src/$^ $^

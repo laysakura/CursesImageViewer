@@ -112,6 +112,22 @@ curses_draw_img_with_origin(const IplImage *img,
 }
 
 
+static inline void
+fix_origin_point(const int win_height,
+                 const int win_width,
+                 const int img_height,
+                 const int img_width,
+                 int *origin_i,
+                 int *origin_j)
+{
+  if (*origin_i < 0) *origin_i = 0;
+  else if (*origin_i >= img_height - win_height) *origin_i = img_height - win_height;
+
+  if (*origin_j < 0) *origin_j = 0;
+  else if (*origin_j >= img_width - win_width) *origin_j = img_width - win_width;
+}
+
+
 void
 curses_draw_img(IplImage *img,
                 const civ_RGB *palette,
@@ -123,27 +139,60 @@ curses_draw_img(IplImage *img,
   /* Setup curses */
   curses_setup();
 
+
+  int img_height = img->height;
+  int img_width = img->width;
+
   int origin_i = 0;
   int origin_j = 0;
 
   /* Wait for keyboard input */
   while (1) {
+    int win_height, win_width;
+    getmaxyx(stdscr, win_height, win_width);
+
+    fix_origin_point(win_height, win_width, img_height, img_width, &origin_i, &origin_j);
+
     curses_draw_img_with_origin(img, palette, palette_len, origin_i, origin_j);
     switch (getch()) {
+    /* Move */
     case 'h':
-      origin_j -= 10;
+      origin_j -= CIV_MOV_DIFF_UNIT;
       break;
     case 'j':
-      origin_i += 10;
+      origin_i += CIV_MOV_DIFF_UNIT;
       break;
     case 'k':
-      origin_i -= 10;
+      origin_i -= CIV_MOV_DIFF_UNIT;
       break;
     case 'l':
-      origin_j += 10;
+      origin_j += CIV_MOV_DIFF_UNIT;
       break;
-    default:
+
+    /* Big move */
+    case 'L':
+      origin_j = 0;
+      break;
+    case 'R':
+      origin_j = img_width - win_width;
+      break;
+    case 'T':
+      origin_i = 0;
+      break;
+    case 'B':
+      origin_i = img_height - win_height;
+      break;
+    case 'C':
+      origin_i = (img_height - win_height) / 2;
+      origin_j = (img_width - win_width) / 2;
+      break;
+
+    /* Quit */
+    case 'q':
       goto outof_keyloop;
+
+    default:
+      break;
     }
   }
  outof_keyloop:
