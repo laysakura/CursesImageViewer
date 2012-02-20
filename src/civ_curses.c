@@ -1,4 +1,7 @@
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include <ncurses.h>
+#include "civ_config.h"
 #include "civ_curses.h"
 #include "civ_color.h"
 #include "civ_color_subtraction.h"
@@ -35,6 +38,35 @@ void
 curses_teardown()
 {
   endwin();
+}
+
+
+/* start_color() MUST be called previously */
+static inline void
+color_number_to_RGB(const int color_number, civ_RGB *RGB_out)
+{
+  short r, g, b;
+  color_content(color_number, &r, &g, &b);
+  RGB_out->r = r;
+  RGB_out->g = g;
+  RGB_out->b = b;
+}
+
+void
+get_curses_palette(civ_RGB *palette_out)
+{
+  curses_setup();
+
+  int color_number;
+  for (color_number = 0; color_number < CIV_CURSES_PALETTE_LEN; ++color_number) {
+    civ_RGB rgb;
+    color_number_to_RGB(color_number, &rgb);
+    palette_out[color_number].r = rgb.r;
+    palette_out[color_number].g = rgb.g;
+    palette_out[color_number].b = rgb.b;
+  }
+
+  curses_teardown();
 }
 
 
@@ -117,4 +149,25 @@ curses_draw_img(IplImage *img,
  outof_keyloop:
 
   curses_teardown();
+}
+
+void
+civ_curses_draw_img(const char *img_path,
+                    const civ_RGB *palette,
+                    const int palette_len)
+{
+  IplImage *img = cvLoadImage(img_path, CV_LOAD_IMAGE_COLOR);
+  assert(img);
+
+#if defined DEBUG
+  int i;
+  printf("Palette:\n");
+  for (i = 0; i < palette_len; ++i)
+    printf("palette[%d] = (%d, %d, %d)\n", i, palette[i].r, palette[i].g, palette[i].b);
+#endif
+
+  curses_draw_img(img, palette, palette_len);
+
+  /* Release object */
+  cvReleaseImage(&img);
 }

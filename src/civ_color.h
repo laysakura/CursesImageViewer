@@ -2,6 +2,9 @@
 #define _CIV_COLOR_H_
 
 
+#include <opencv/cv.h>
+
+
 typedef struct civ_RGB {
   unsigned char r;
   unsigned char g;
@@ -16,6 +19,7 @@ typedef struct civ_RGB {
    curses_color_number -> RGB:
      palette[color_number].(r|g|b)
 */
+
 
 static inline void
 CvScalar_to_RGB(const CvScalar *cvScalar, civ_RGB *RGB_out)
