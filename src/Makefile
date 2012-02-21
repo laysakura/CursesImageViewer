@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -O3 -g
 CFLAGS_DEBUG = -Wall -g -O3
 LDFLAGS = -lcv -lhighgui -lncurses
 INCLUDES =
@@ -20,7 +20,7 @@ clean:
 	rm -f $(TARGETS) *.o *.d *.s *.gch *_flymake* core *~
 
 # Targets
-curses_image_viewer: civ_main.o civ_color_subtraction.o civ_curses.o
+curses_image_viewer: civ_main.o civ_img_processing.o civ_curses.o
 	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 

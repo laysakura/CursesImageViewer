@@ -29,6 +29,8 @@ CvScalar_to_RGB(const CvScalar *cvScalar, civ_RGB *RGB_out)
   RGB_out->b = cvScalar->val[0];
 }
 
+#include <stdio.h>
+
 static inline int
 CvScalar_to_color_number(const CvScalar *cvScalar,
                          const civ_RGB *palette,
@@ -39,9 +41,14 @@ CvScalar_to_color_number(const CvScalar *cvScalar,
 
   int color_number;
   for (color_number = 0; color_number < palette_len; ++color_number) {
-    if (palette[color_number].r == rgb.r &&
-        palette[color_number].g == rgb.g &&
-        palette[color_number].b == rgb.b) {
+    if (abs(palette[color_number].r - rgb.r) <= 1.0 &&
+        abs(palette[color_number].g - rgb.g) <= 1.0 &&
+        abs(palette[color_number].b - rgb.b) <= 1.0) {
+      FILE *f = fopen("test.txt", "a");
+      fprintf(f, "chosen_palette=(%d,%d,%d) ; pixel=(%d,%d,%d)\n",
+              palette[color_number].r, palette[color_number].g, palette[color_number].b,
+              rgb.r, rgb.g, rgb.b);
+      fclose(f);
       return color_number;
     }
   }

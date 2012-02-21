@@ -4,7 +4,7 @@
 #include "civ_config.h"
 #include "civ_curses.h"
 #include "civ_color.h"
-#include "civ_color_subtraction.h"
+#include "civ_img_processing.h"
 
 
 /* NOTE that each color_pair == color_number + 1
@@ -132,6 +132,18 @@ fix_origin_point(const int win_height,
 }
 
 
+/* Adhoc function */
+static inline void
+safe_release(IplImage *img_to_release,
+             const IplImage *orig_img)
+{
+  if (img_to_release == NULL ||
+      img_to_release == orig_img)
+    return;
+
+  cvReleaseImage(&img_to_release);
+}
+
 void
 curses_draw_img(IplImage *img,
                 const civ_RGB *palette,
@@ -144,23 +156,30 @@ curses_draw_img(IplImage *img,
   curses_setup();
 
 
-  int img_height = img->height;
-  int img_width = img->width;
+  /* NOTE that processed_img must be released */
+  IplImage *processed_img = img;
+
   int origin_i = 0;
   int origin_j = 0;
 
   /* Wait for keyboard input */
   while (1) {
+    /* Calc size */
+    int img_height = processed_img->height;
+    int img_width = processed_img->width;
     int win_height, win_width;
     getmaxyx(stdscr, win_height, win_width);
-
     fix_origin_point(win_height, win_width, img_height, img_width, &origin_i, &origin_j);
 
-    curses_draw_img_with_origin(img,
+    /* Draw */
+    curses_draw_img_with_origin(processed_img,
                                 palette, palette_len,
                                 win_height, win_width,
                                 origin_i, origin_j);
+
+    /* Receive keyboard input */
     switch (getch()) {
+
     /* Move */
     case 'h':
       origin_j -= CIV_MOV_DIFF_UNIT;
@@ -193,8 +212,28 @@ curses_draw_img(IplImage *img,
       origin_j = (img_width - win_width) / 2;
       break;
 
+    /* Back to original image */
+    case 'o':
+      safe_release(processed_img, img);
+      processed_img = img;
+      break;
+
+    /* Resize */
+    case 'f':
+      safe_release(processed_img, img);
+      float scale = (win_height/(float)img_height > win_width/(float)img_width ?
+                     win_width/(float)img_width : win_height/(float)img_height);
+      if (scale > 1.0)
+        break;
+
+      processed_img = cvCreateImage(cvSize(img_width * scale, img_height * scale),
+                                    img->depth, img->nChannels);
+      cvResize(img, processed_img, CV_INTER_NN);
+      break;
+
     /* Quit */
     case 'q':
+      safe_release(processed_img, img);
       goto outof_keyloop;
 
     default:
