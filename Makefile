@@ -5,7 +5,7 @@ all: $(TARGETS)
 
 .PHONY: clean
 clean:
-	rm $(TARGETS)
+	rm curses_image_viewer
 	cd src ; $(MAKE) $@
 
 curses_image_viewer_topdir: curses_image_viewer
